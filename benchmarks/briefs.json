@@ -1,0 +1,14 @@
+[
+  {
+    "id": "ceramics",
+    "brief": "Landing page for Kiln & Kin, a small ceramics studio in Portland, Oregon. They teach wheel-throwing (a 6-week beginner course, open-studio memberships, private date-night sessions) and sell 'seconds' from their own pottery on Saturdays. One page."
+  },
+  {
+    "id": "climbing",
+    "brief": "Home page for Crux Collective, an independent bouldering gym opening its second location inside an old textile mill in Providence, Rhode Island. Cover the opening date (March 14), day passes and memberships, the youth climbing team, and their route-setting philosophy."
+  },
+  {
+    "id": "invoicing",
+    "brief": "Marketing homepage for Ledgerline, a B2B invoicing API for freelance marketplaces: send invoices, collect payouts in 40 currencies, and generate tax forms automatically. The audience is developers and platform product managers."
+  }
+]

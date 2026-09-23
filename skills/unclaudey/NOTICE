@@ -1,0 +1,29 @@
+unclaudey
+Copyright 2026 Rami Aldine
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product includes material derived from the "frontend-design" skill in
+https://github.com/anthropics/skills (path skills/frontend-design, commit 41bbe19),
+Copyright Anthropic, PBC, licensed under the Apache License, Version 2.0.
+
+Changes made to the upstream SKILL.md in skills/unclaudey/SKILL.md:
+  - renamed the skill and rewrote the frontmatter name, description and license line
+  - added imagery to the opening paragraph and to "Ground your designs in the subject matter"
+  - added photography guidance to "Design principles" (the hero paragraph and the motion paragraph)
+  - added a sixth calibration trait (absent or generic imagery) to the process section
+  - added "Imagery" to the design-plan token system and a note on finalizing color after photos
+  - added the section "Imagery: real photographs, chosen with your own eyes" and the References list
+  - added a note on cross-project photo reuse to "Restraint and self-critique"
+  All other upstream text is retained verbatim.
+
+Everything else in this repository (the unclaudey engine in skills/unclaudey/scripts, the
+references, benchmarks and documentation) is original work.
+
+Services, data and models used at runtime. None of them are redistributed by this project;
+each user obtains them directly under their own terms:
+  - Unsplash Dataset (Lite): downloaded by each user under the Unsplash Dataset Terms
+    https://github.com/unsplash/datasets/blob/master/TERMS.md
+  - Unsplash API, with each user's own access key, under the Unsplash API Terms and Guidelines
+  - Openverse API (https://openverse.org)
+  - SigLIP 2 model weights (Google), Apache-2.0, loaded through open_clip from Hugging Face

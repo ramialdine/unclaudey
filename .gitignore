@@ -1,0 +1,20 @@
+# unclaudey working files and caches (the Unsplash dataset and index must never be committed)
+.unclaudey/
+*.npy
+*.sqlite
+*.sqlite-journal
+dataset/
+thumbs/
+.env
+.env.*
+
+# python / node / os
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+
+# eval scratch (screenshots are committed under evals/results/)
+benchmarks/runs/
+.ruff_cache/
