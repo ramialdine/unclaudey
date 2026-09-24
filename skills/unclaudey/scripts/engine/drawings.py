@@ -33,6 +33,9 @@ COLLECT = """
     const info = {i, tag: e.tagName.toLowerCase(), w: Math.round(r.width), h: Math.round(r.height),
                   label: e.getAttribute('aria-label') || (e.querySelector && e.querySelector('title') ? e.querySelector('title').textContent : '') || '',
                   hiddenForA11y: e.getAttribute('aria-hidden') === 'true'};
+    // is it inside a container that scrolls or clips sideways (an intentional horizontal scroller)?
+    for (let n = e.parentElement; n && n !== document.body; n = n.parentElement) {
+      const ox = getComputedStyle(n).overflowX; if (['auto', 'scroll', 'hidden', 'clip'].includes(ox)) { info.contained = true; break; } }
     if (info.tag === 'svg') {
       const vb = e.viewBox && e.viewBox.baseVal;
       info.vb = vb && vb.width ? [vb.x, vb.y, vb.width, vb.height] : null;
@@ -138,7 +141,7 @@ def run(target: str, out_dir: Path) -> dict:
                 findings.append(("warn", f"{tag}: {len(off)} of {len(hexes)} colors aren't in the palette (e.g. {', '.join(off[:3])})"))
         md = by_i_mobile.get(d["i"])
         if md:
-            if md["w"] > m_vw + 2:
+            if md["w"] > m_vw + 2 and not md.get("contained"):
                 findings.append(("warn", f"{tag}: {md['w']}px wide on a {m_vw}px phone, so it overflows"))
             if md.get("tinyText"):
                 findings.append(("warn", f"{tag}: {md['tinyText']} text label(s) under 10px on a phone"))
