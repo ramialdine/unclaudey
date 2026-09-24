@@ -39,6 +39,7 @@ CSS = """
 --display:"Archivo",system-ui,sans-serif;--body:"Archivo",system-ui,sans-serif;--edge:"IBM Plex Mono",ui-monospace,monospace}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#221f1d;--sheet:#2b2825;--ink:#efebe6;--muted:#aaa39b;--rule:#443f3a;--pencil:#e0574d;--pencil-ink:#1b1918;color-scheme:dark}}
 :root[data-theme="dark"]{--ground:#221f1d;--sheet:#2b2825;--ink:#efebe6;--muted:#aaa39b;--rule:#443f3a;--pencil:#e0574d;--pencil-ink:#1b1918;color-scheme:dark}
+[hidden]{display:none!important}
 body{background:var(--ground);color:var(--ink);font:16px/1.55 var(--body);padding-inline:clamp(16px,4vw,48px);padding-block:40px 64px}
 .wrap{max-width:1320px;margin:0 auto;display:grid;gap:56px}
 header{display:grid;gap:14px;max-width:72ch}

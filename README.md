@@ -147,7 +147,13 @@ The setup: the same three briefs, each built by fresh Claude sessions with a sin
 
 <sub>Right-hand photos by [Grant.C](https://www.flickr.com/photos/69663188@N00) on Flickr, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), found via Openverse.</sub>
 
-Honest verdict: unclaudey clearly won climbing, ceramics was a split, and invoicing was a tie. The baseline skill is already good, and both arms still converged on fonts and concepts for the same brief. Details, method and caveats are in [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md). To reproduce, run `benchmarks/run_ab.sh` (headless Claude Code).
+**v0.2** adds code-drawn visuals and motion. The v0.2 builds combined real photos with drawings (a ware board of pots and a live wheel, a mill cross-section, route charts) and passed every drawing and motion check:
+
+![Climbing brief, first screen: frontend-design only, unclaudey v0.1, unclaudey v0.2](benchmarks/results/climbing-3way-first-screen.jpg)
+
+<sub>Photos in the v0.1 and v0.2 builds by [Grant.C](https://www.flickr.com/photos/69663188@N00) on Flickr, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), found via Openverse.</sub>
+
+Honest verdict for v0.1: unclaudey clearly won climbing, ceramics was a split, and invoicing was a tie. The baseline skill is already good, and both arms still converged on fonts and concepts for the same brief. Details, method and caveats are in [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md). To reproduce, run `benchmarks/run_ab.sh` (headless Claude Code).
 
 ## Limitations (honest ones)
 

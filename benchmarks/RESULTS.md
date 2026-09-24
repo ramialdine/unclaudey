@@ -108,3 +108,50 @@ Nothing in this file compares the Unsplash Dataset with other datasets. The data
 3. **Cost.** The skill's review loop is thorough, and early runs over-explored (19 slots on one page, plus trying an off-pipeline stock site). SKILL.md now has two rules: *use only photos from this pipeline*, and *keep the run lean*.
 
 The ceramics and invoicing unclaudey screenshots aren't published here. Those builds include unresolved (draft) Unsplash photos, and the dataset terms don't allow publishing them. They'll be added after the photos are resolved through the Unsplash API.
+
+## 4. v0.2 (photos + drawings + motion): mini A/B (2026-09-24)
+
+**Method:**
+- The ceramics and climbing briefs were each built once more with unclaudey v0.2, by fresh Claude sessions using the same prompt as before.
+- They're compared with the existing frontend-design and v0.1 pages.
+- Every page was checked with unclaudey's own tools: `lint`, `sheet drawings` and `motion` (`motion_all.py`).
+- Both v0.2 sessions were cut off by usage limits. The climbing page was already complete; the ceramics session was resumed and told to finish without further exploration.
+
+![Climbing brief, first screen: frontend-design only, unclaudey v0.1, unclaudey v0.2](results/climbing-3way-first-screen.jpg)
+
+<details><summary>Longer view: first screen and the top of each page</summary>
+
+![Climbing brief, three versions](results/climbing-3way-pages.jpg)
+
+</details>
+
+*Photos in both unclaudey builds: "IMG_6787", "IMG_6792", "IMG_6793", "IMG_6799", "IMG_6804" and "IMG_7018" by [Grant.C](https://www.flickr.com/photos/69663188@N00) on Flickr, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), found through Openverse. The v0.2 first screen is a code-drawn cross-section of the mill, and the frontend-design page uses only its own SVG drawings.*
+
+| | frontend-design only | unclaudey v0.1 | unclaudey v0.2 |
+|---|---|---|---|
+| Photos (ceramics / climbing) | 0 / 0 | 5 / 5 | 4 / 2 |
+| Code-drawn SVG and canvas | 11 + canvas / 21 | 0 / 0 | 15 + live wheel / 14 |
+| Load motion | pot on canvas / holds animate | CSS on load / CSS on load | wheel triggers on reach / drawings assemble |
+| Layout shift (CLS) | 0.0002 / 0.0052 | 0.0104 / 0.0176 | 0.002 / 0.0026 |
+| Hidden with JavaScript off or reduced motion | 0 / 0 | 0 / 0 | 0 / 0 |
+| `lint` errors / `sheet drawings` issues | 0 / – | 0 / – | 0 / 0 (after two rule fixes) |
+
+**Verdicts (by eye):**
+- **Ceramics: v0.2.** It combines what worked in both earlier versions:
+  - real documentary photos
+  - a drawn ware board of six pots, from lump to glazed mug
+  - a live wheel that names what you're making ("a cylinder, 13 cm tall, week two")
+  - the seconds drawn with each pot's flaw circled
+
+  The frontend-design page's interactive cobalt 3D pot is still the flashiest first screen.
+- **Climbing: split.** v0.2 has the best information design: a mill cross-section with the six wall types, an opening-set chart drawn as route columns in tape colors, and a site map, with real photos for the story. v0.1's brick-red hero with arched photo windows is the most atmospheric first screen.
+
+**What the new tools did:**
+- `sheet drawings` let the ceramics builder *see* a bug no rule could catch: the live wheel's pot was growing off its canvas, because two variables shared a name. It fixed the bug before finishing.
+- `sheet drawings` and `lint` found two issues on the climbing page that its builder never got to fix, because the usage limit cut it off:
+  - a lazy-loaded photo marked as the hero
+  - a drawing wider than a phone screen, which turned out to sit inside a horizontal scroller
+- Two rules were too strict and were fixed: drawings inside horizontal scrollers, and textures clipped on purpose to a shape.
+- `motion` separated real load animations from photos arriving over the network. It reported the ceramics v0.2 page's lack of load motion as a note, not a failure, because its signature moment triggers when the wheel scrolls into view.
+
+**Cost:** a v0.2 build used about 375k tokens (ceramics), against about 270k for v0.1 builds. Drawing generators and visual checks take work. SKILL.md's "keep the run lean" rule applies.

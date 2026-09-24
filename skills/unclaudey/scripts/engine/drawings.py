@@ -40,6 +40,8 @@ COLLECT = """
       const vb = e.viewBox && e.viewBox.baseVal;
       info.vb = vb && vb.width ? [vb.x, vb.y, vb.width, vb.height] : null;
       try { const b = e.getBBox(); info.bbox = [b.x, b.y, b.width, b.height]; } catch (err) { info.bbox = null; }
+      // content clipped on purpose (textures masked to a shape) makes getBBox overshoot the viewBox
+      info.clips = !!e.querySelector('clipPath, mask, [clip-path], [mask]');
       const cols = new Set(); let tiny = 0;
       const scale = info.vb ? r.width / info.vb[2] : 1;
       e.querySelectorAll('path,rect,circle,ellipse,polygon,polyline,line,text,tspan').forEach(n => {
@@ -128,7 +130,7 @@ def run(target: str, out_dir: Path) -> dict:
         g = np.asarray(Image.open(io.BytesIO(light[d["i"]])).convert("L"), dtype=np.float32)
         if g.std() < 2.0:
             findings.append(("fail", f"{tag}: renders empty or invisible"))
-        if d.get("vb") and d.get("bbox"):
+        if d.get("vb") and d.get("bbox") and not d.get("clips"):
             vx, vy, vw_, vh = d["vb"]
             bx, by, bw, bh = d["bbox"]
             over = max(vx - bx, vy - by, (bx + bw) - (vx + vw_), (by + bh) - (vy + vh))
