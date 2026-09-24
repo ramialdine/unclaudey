@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 APP = "unclaudey"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 LITE_URL = "https://unsplash.com/data/lite/latest"
 TERMS_URL = "https://github.com/unsplash/datasets/blob/master/TERMS.md"

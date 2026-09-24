@@ -1,0 +1,33 @@
+/* unclaudey · drawings that draw themselves, and layers that assemble.
+ * Requires <script>document.documentElement.classList.add('js')</script> in <head>, so
+ * drawings stay fully visible if scripts never run.
+ *
+ * Draw-on:   <svg class="draw-on"> <path pathLength="1" style="--i:0" …/> <path pathLength="1" style="--i:1" …/> </svg>
+ *            add class "on-scroll" to tie it to scrolling instead of load
+ * Assemble:  <svg> <g class="assemble"> <g style="--i:0">…</g> <g style="--i:1">…</g> </g> </svg>
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js .draw-on [pathLength] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: uc-draw var(--dur-draw, 1.4s) var(--ease, cubic-bezier(.2, .7, .2, 1)) forwards;
+    animation-delay: calc(var(--i, 0) * 140ms);
+  }
+  .js .assemble > g {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: uc-rise var(--dur-2, .8s) var(--ease, cubic-bezier(.2, .7, .2, 1)) both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+  @supports (animation-timeline: view()) {
+    .js .draw-on.on-scroll [pathLength],
+    .js .assemble.on-scroll > g {
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+      animation-delay: 0s;
+      animation-fill-mode: both;
+    }
+  }
+}
+@keyframes uc-draw { to { stroke-dashoffset: 0; } }
+@keyframes uc-rise { from { transform: translateY(14px) scaleY(.96); opacity: 0; } }

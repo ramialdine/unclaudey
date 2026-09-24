@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Design skills that stop Claude-built sites from looking Claude-built.",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
@@ -14,7 +14,7 @@
       "description": "Distinctive frontend design with real, art-directed photography: semantic search over a local photo library, contact-sheet review, palette from the photos, credited responsive export.",
       "source": "./",
       "strict": false,
-      "version": "0.1.0",
+      "version": "0.2.0",
       "license": "Apache-2.0",
       "keywords": ["design", "frontend", "photography", "unsplash", "images", "ui", "web-design"],
       "skills": ["./skills/unclaudey"]

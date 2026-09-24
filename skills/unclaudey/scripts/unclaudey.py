@@ -11,6 +11,7 @@
 #   "timm>=1.0.17",
 #   "transformers>=4.45",
 #   "sentencepiece>=0.2",
+#   "playwright>=1.45",
 # ]
 # [tool.uv.sources]
 # torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
@@ -31,6 +32,8 @@ Run with uv (it provisions Python and dependencies on first use):
     uv run scripts/unclaudey.py resolve
     uv run scripts/unclaudey.py export --mode hotlink
     uv run scripts/unclaudey.py lint index.html
+    uv run scripts/unclaudey.py sheet drawings --page index.html   # look at code-drawn SVG/canvas
+    uv run scripts/unclaudey.py motion index.html                  # filmstrips + motion checks
 
 See SKILL.md next to this folder for the full workflow.
 """
@@ -92,9 +95,21 @@ def cmd_search(a: argparse.Namespace) -> int:
 
 
 def cmd_sheet(a: argparse.Namespace) -> int:
+    if a.view == "drawings":
+        from engine import drawings
+
+        if not a.page:
+            raise SystemExit("sheet drawings needs --page <file.html or URL>")
+        return drawings.run_cli(a.page)
     from engine import sheets
 
     return sheets.run_cli(a)
+
+
+def cmd_motion(a: argparse.Namespace) -> int:
+    from engine import motion
+
+    return motion.run_cli(a)
 
 
 def cmd_palette(a: argparse.Namespace) -> int:
@@ -160,7 +175,8 @@ def main(argv: list[str] | None = None) -> int:
     s.set_defaults(fn=cmd_search)
 
     s = sub.add_parser("sheet", help="render finalist crops or the full selected set for visual review")
-    s.add_argument("view", choices=["finalists", "set", "slot"])
+    s.add_argument("view", choices=["finalists", "set", "slot", "drawings"])
+    s.add_argument("--page", default=None, help="drawings: the built page (file or URL)")
     s.add_argument("--slot", default=None)
     s.add_argument("--picks", default=None, help="candidate numbers from the slot's contact sheet, e.g. 2,5,7")
     s.add_argument("--crops", default="16:9,4:5", help="aspect ratios to preview")
@@ -168,6 +184,11 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--headline", default=None, help="sample headline drawn in the copy space")
     s.add_argument("--selection", default=None)
     s.set_defaults(fn=cmd_sheet)
+
+    s = sub.add_parser("motion", help="filmstrips and checks for a page's animation (load, scroll, hover, at rest)")
+    s.add_argument("page", help="the built page (file or URL)")
+    s.add_argument("--video", action="store_true", help="also save a webm of load + scroll")
+    s.set_defaults(fn=cmd_motion)
 
     s = sub.add_parser("palette", help="derive color tokens from the selected photos")
     s.add_argument("--selection", default=None)

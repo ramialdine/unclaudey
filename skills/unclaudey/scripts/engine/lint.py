@@ -109,6 +109,9 @@ def lint(files: list[Path], manifest: dict | None, network: bool, allow_draft: b
             is_hero = attrs.get("src") in hero_srcs if hero_srcs else n == 0
             if lazy and is_hero:
                 warns.append(f"{f}:{line}: the hero image is lazy-loaded; load it eagerly with fetchpriority=\"high\"")
+    for f, text in texts.items():
+        if f.suffix.lower() in HTML_LIKE | {".css", ".jsx", ".tsx", ".js", ".ts"}:
+            warns += motion_checks(f, text)
     # credits
     if manifest and manifest.get("images"):
         alltext = "\n".join(texts.values())
@@ -131,6 +134,52 @@ def lint(files: list[Path], manifest: dict | None, network: bool, allow_draft: b
                 errors.append(f"image request failed: {u[:100]} ({type(ex).__name__})")
         client.close()
     return errors, warns
+
+
+ENTRANCE = re.compile(r"reveal|fade|animate|appear|slide|in-?view|aos|entrance|stagger|show-on", re.I)
+LAYOUT_PROPS = re.compile(r"(?<![-\w])(top|left|right|bottom|width|height|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?)\s*:", re.I)
+JS_GATE = re.compile(r"(^|[\s,>~+(])(html)?\.(js|has-js|js-enabled)\b|\[data-js|scripting\s*:\s*enabled", re.I)
+
+
+def _keyframes(text: str) -> list[tuple[str, str]]:
+    out = []
+    for m in re.finditer(r"@keyframes\s+([\w-]+)\s*\{", text):
+        depth, j = 1, m.end()
+        while j < len(text) and depth:
+            depth += {"{": 1, "}": -1}.get(text[j], 0)
+            j += 1
+        out.append((m.group(1), text[m.end():j]))
+    return out
+
+
+def motion_checks(f: Path, text: str) -> list[str]:
+    """Static checks for motion that makes pages feel generated, broken or inaccessible."""
+    warns = []
+    has_anim = bool(re.search(r"@keyframes|\banimation(-name)?\s*:|gsap\.|\.animate\(|animation-timeline", text))
+    if has_anim and "prefers-reduced-motion" not in text:
+        warns.append(f"{f}: animations but no prefers-reduced-motion handling")
+    for m in re.finditer(r"([^{}@;]+)\{([^{}]*)\}", text):
+        sel, body = m.group(1).strip(), m.group(2)
+        if not re.search(r"opacity\s*:\s*0(?![.\d])", body) or re.match(r"^(from|to|[\d.]+%)", sel):
+            continue
+        if ENTRANCE.search(sel) and not JS_GATE.search(sel):
+            line = text.count("\n", 0, m.start()) + 1
+            warns.append(f"{f}:{line}: '{sel[:50]}' starts invisible (opacity: 0) with no JavaScript gate; "
+                         "if scripts fail, the content never appears (prefix with .js set by an inline script)")
+            break
+    for name, body in _keyframes(text):
+        props = sorted({p.group(1).lower() for p in LAYOUT_PROPS.finditer(body)})
+        if props:
+            warns.append(f"{f}: @keyframes {name} animates {', '.join(props)}; animate transform/clip-path/opacity instead")
+    if re.search(r"fullpage(\.min)?\.js|new\s+fullpage\(|locomotive-scroll", text, re.I) or \
+            (re.search(r"addEventListener\(\s*['\"]wheel", text) and "preventDefault" in text):
+        warns.append(f"{f}: scroll-jacking (hijacked wheel scrolling) is disorienting; let the page scroll natively")
+    wc = len(re.findall(r"will-change\s*:", text))
+    if wc > 8:
+        warns.append(f"{f}: will-change used {wc} times; reserve it for elements that animate constantly")
+    if "animation-timeline" in text and not re.search(r"@supports[^{]*animation-timeline", text):
+        warns.append(f"{f}: scroll-driven animation (animation-timeline) without @supports; Firefox needs a static fallback")
+    return warns
 
 
 def _used(e: dict, alltext: str) -> bool:

@@ -1,0 +1,38 @@
+/* unclaudey · photo reveal for a story beat (use on 2-3 photos, not every section).
+ * Requires <script>document.documentElement.classList.add('js')</script> in <head>.
+ *
+ * Markup:  <figure class="reveal-photo"><img … width="…" height="…" alt="…"></figure>
+ * Browsers with scroll timelines (Chrome, Edge, Safari 26+) animate with pure CSS. Others
+ * (Firefox) get a one-time reveal from this tiny script, placed at the end of <body>:
+ *
+ *   <script>
+ *   if (!CSS.supports('animation-timeline: view()') && 'IntersectionObserver' in window) {
+ *     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) {
+ *       e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .25 });
+ *     document.querySelectorAll('.reveal-photo').forEach(el => io.observe(el));
+ *   }
+ *   </script>
+ */
+.reveal-photo { overflow: hidden; margin: 0; }
+.reveal-photo img { display: block; width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .js .reveal-photo {
+      animation: uc-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+    .js .reveal-photo img {
+      animation: uc-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+  }
+  @supports not (animation-timeline: view()) {
+    .js .reveal-photo { transition: clip-path var(--dur-3, .9s) var(--ease, cubic-bezier(.2, .7, .2, 1)); }
+    .js .reveal-photo:not(.is-in) { clip-path: inset(10% 10% 10% 10%); }
+  }
+}
+@keyframes uc-open { from { clip-path: inset(10% 10% 10% 10%); } to { clip-path: inset(0); } }
+@keyframes uc-settle { from { transform: scale(1.08); } to { transform: none; } }

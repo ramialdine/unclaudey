@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><title>motion-good fixture</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{--ease-out:cubic-bezier(.2,.7,.2,1);--dur-3:900ms}
+body{font:18px/1.5 Georgia,serif;margin:0;background:#f3efe8;color:#231f1b}
+.hero{min-height:70vh;display:grid;align-content:end;padding:8vw;background:#2c3a33;color:#f3efe8;overflow:hidden}
+.hero h1{font-size:clamp(40px,7vw,96px);margin:0}
+.js .hero h1{animation:lift var(--dur-3) var(--ease-out) both}
+@keyframes lift{from{clip-path:inset(0 0 100% 0);transform:translateY(24px)}to{clip-path:inset(0);transform:none}}
+section{padding:10vh 8vw;min-height:60vh}
+.frame{height:40vh;background:linear-gradient(135deg,#6b7f6f,#2c3a33);border-radius:4px}
+@supports (animation-timeline: view()){
+  .beat .frame{animation:open linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+  @keyframes open{from{clip-path:inset(12% 12% 12% 12%)}to{clip-path:inset(0)}}
+}
+a.cta{display:inline-block;padding:12px 18px;background:#c2562e;color:#fff;text-decoration:none;transition:transform .2s var(--ease-out),background .2s}
+a.cta:hover{transform:translateY(-2px);background:#a94722}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header class="hero"><h1>Clay, centered.</h1><p><a class="cta" href="#course">Book the course</a></p></header>
+<section id="course" class="beat"><h2>Week one: centering</h2><p>A real beat of the story, revealed once as the frame opens.</p><div class="frame"></div></section>
+<section class="beat"><h2>Week three: trimming</h2><p>A second beat. Two beats, not eight.</p><div class="frame"></div></section>
+<section><h2>Visit</h2><p>Plain, calm content: no entrance needed.</p></section>
+</body></html>

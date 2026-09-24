@@ -2,13 +2,17 @@
 
 **Stop Claude-built sites from looking Claude-built.**
 
-unclaudey is an [Agent Skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) for Claude Code. It forks Anthropic's [`frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) skill and gives it something that skill doesn't have: **real photography, chosen by Claude with its own eyes.**
+unclaudey is an [Agent Skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) for Claude Code. It forks Anthropic's [`frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) skill and gives it three things that skill doesn't have:
+- **real photography**, chosen by Claude with its own eyes
+- **code-drawn illustration**, built from the subject's real geometry
+- **purposeful motion** that Claude can actually see before it ships
 
 - It semantically searches a local library of ~25,000 professional photos, plus live Unsplash and Openverse.
 - It puts the candidates on numbered **contact sheets** that Claude looks at before choosing.
 - It previews crops with the real headline in place.
 - It derives the **color palette from the chosen photos**.
 - It exports responsive, credited, lint-checked `<img>` markup. Claude never has to invent an image URL again.
+- **v0.2:** it casts each section as a photo, drawing, live object or type. It draws SVG and canvas visuals from the subject's real shapes (pots from lathe profiles, climbing holds from organic blobs), in the photos' palette. It directs one signature motion moment plus a few scroll beats, then checks them with `sheet drawings` (renders every drawing) and `motion` (load and scroll filmstrips, layout shift, jank, content hidden without JavaScript or with reduced motion, repeated fade-ups).
 
 ---
 
@@ -34,7 +38,9 @@ Real photography of the subject's world (the studio, the food, the climbing wall
 | **Look** | Numbered contact sheets, then finalist crops at 16:9 and 4:5 with the real headline drawn in and its contrast measured, then a "set" view to check the photos read as one voice. |
 | **Palette** | k-means in OKLab over the chosen photos gives `--color-*` tokens with WCAG checks. It warns if the result lands on a known generated-looking palette. |
 | **Ship** | Resolves each photo through the Unsplash API (with download tracking), then exports `srcset`/`sizes`, `width`/`height`, focal-point `object-position`, blurhash placeholders and credits. It has an `inline` mode for Claude artifacts, where external images are blocked. |
-| **Check** | `lint` fails on invented Unsplash URLs, dead `source.unsplash.com` links, `<img>` without `alt`, and draft photos. It warns on layout shift, lazy heroes and missing credits. |
+| **Draw** | Code-drawn SVG and canvas from the subject's geometry, with snippets for the one interactive "live object", drawings that draw themselves, and photo reveals. `sheet drawings` renders every drawing (desktop, phone and dark mode) and flags empty, clipped, off-palette or illegible ones. |
+| **Move** | A motion direction per brief (personality, one signature moment, at most three scroll beats), CSS-first with GSAP when needed. `motion` shows Claude filmstrips of the load and the scroll, and measures layout shift, frame pacing, and content hidden with JavaScript off or reduced motion. |
+| **Check** | `lint` fails on invented Unsplash URLs, dead `source.unsplash.com` links, `<img>` without `alt`, and draft photos. It warns on layout shift, lazy heroes, missing credits and motion anti-patterns. |
 
 ## Install
 
@@ -112,6 +118,8 @@ $UC palette [--theme light|dark]
 $UC resolve
 $UC export --mode hotlink|inline|download [--out public/images]
 $UC lint index.html
+$UC sheet drawings --page index.html      # look at every SVG/canvas drawing
+$UC motion index.html [--video]           # load + scroll filmstrips and motion checks
 ```
 
 Files it writes in your project's `.unclaudey/` folder:
@@ -165,6 +173,9 @@ See [skills/unclaudey/references/licensing.md](skills/unclaudey/references/licen
 
 ## Works well with
 
+- [greensock/gsap-skills](https://github.com/greensock/gsap-skills): official GSAP skills for the API details when a page needs ScrollTrigger or SplitText. GSAP is free for commercial sites.
+- [LottieFiles/motion-design-skill](https://github.com/LottieFiles/motion-design-skill): motion-direction principles (timing, choreography, personality).
+
 - [Impeccable](https://github.com/pbakaus/impeccable): audits with 61 deterministic anti-pattern detectors (`npx impeccable detect`).
 - [Taste-skill](https://github.com/Leonxlnx/taste-skill): variance, motion and density "dials".
 - [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill): style, palette and font databases.
@@ -173,6 +184,7 @@ See [skills/unclaudey/references/licensing.md](skills/unclaudey/references/licen
 ## Roadmap
 
 - [ ] Persistent search server (MCP) so the model stays loaded between searches
+- [ ] Photo-to-code bridges: trace a photo into on-palette SVG, depth "living photos", subject cutouts (headline behind the subject)
 - [ ] Public-domain and CC0 index (PD12M subset) for editorial and archival looks
 - [ ] Pexels provider (photos + short video loops)
 - [ ] Optional generated-image fallback for subjects no library covers
