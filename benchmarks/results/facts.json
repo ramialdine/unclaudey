@@ -1,0 +1,143 @@
+{
+  "ceramics": {
+    "baseline": {
+      "facts": {
+        "bytes": 106317,
+        "img_tags": 0,
+        "img_with_alt": 0,
+        "data_uri_imgs": 0,
+        "svg_elements": 11,
+        "image_hosts": {},
+        "google_fonts": [
+          "Familjen Grotesk",
+          "Young Serif"
+        ],
+        "has_credits": false
+      },
+      "shots": [
+        "ceramics-baseline-desktop-fold.jpg",
+        "ceramics-baseline-desktop-full.jpg",
+        "ceramics-baseline-mobile-fold.jpg",
+        "ceramics-baseline-mobile-full.jpg"
+      ]
+    },
+    "unclaudey": {
+      "facts": {
+        "bytes": 50482,
+        "img_tags": 5,
+        "img_with_alt": 5,
+        "data_uri_imgs": 0,
+        "svg_elements": 0,
+        "image_hosts": {
+          "images.unsplash.com": 14,
+          "unsplash.com": 3
+        },
+        "google_fonts": [
+          "Schibsted Grotesk",
+          "Young Serif"
+        ],
+        "has_credits": true
+      },
+      "shots": [
+        "ceramics-unclaudey-desktop-fold.jpg",
+        "ceramics-unclaudey-desktop-full.jpg",
+        "ceramics-unclaudey-mobile-fold.jpg",
+        "ceramics-unclaudey-mobile-full.jpg"
+      ]
+    }
+  },
+  "climbing": {
+    "baseline": {
+      "facts": {
+        "bytes": 64041,
+        "img_tags": 0,
+        "img_with_alt": 0,
+        "data_uri_imgs": 0,
+        "svg_elements": 21,
+        "image_hosts": {},
+        "google_fonts": [
+          "Besley",
+          "Libre Franklin"
+        ],
+        "has_credits": false
+      },
+      "shots": [
+        "climbing-baseline-desktop-fold.jpg",
+        "climbing-baseline-desktop-full.jpg",
+        "climbing-baseline-mobile-fold.jpg",
+        "climbing-baseline-mobile-full.jpg"
+      ]
+    },
+    "unclaudey": {
+      "facts": {
+        "bytes": 38559,
+        "img_tags": 5,
+        "img_with_alt": 5,
+        "data_uri_imgs": 0,
+        "svg_elements": 0,
+        "image_hosts": {
+          "live.staticflickr.com": 6
+        },
+        "google_fonts": [
+          "Besley",
+          "Libre Franklin"
+        ],
+        "has_credits": true
+      },
+      "shots": [
+        "climbing-unclaudey-desktop-fold.jpg",
+        "climbing-unclaudey-desktop-full.jpg",
+        "climbing-unclaudey-mobile-fold.jpg",
+        "climbing-unclaudey-mobile-full.jpg"
+      ]
+    }
+  },
+  "invoicing": {
+    "baseline": {
+      "facts": {
+        "bytes": 61327,
+        "img_tags": 0,
+        "img_with_alt": 0,
+        "data_uri_imgs": 0,
+        "svg_elements": 0,
+        "image_hosts": {},
+        "google_fonts": [
+          "Archivo",
+          "Atkinson Hyperlegible Mono"
+        ],
+        "has_credits": false
+      },
+      "shots": [
+        "invoicing-baseline-desktop-fold.jpg",
+        "invoicing-baseline-desktop-full.jpg",
+        "invoicing-baseline-mobile-fold.jpg",
+        "invoicing-baseline-mobile-full.jpg"
+      ]
+    },
+    "unclaudey": {
+      "facts": {
+        "bytes": 68353,
+        "img_tags": 4,
+        "img_with_alt": 4,
+        "data_uri_imgs": 0,
+        "svg_elements": 0,
+        "image_hosts": {
+          "images.unsplash.com": 14,
+          "live.staticflickr.com": 2,
+          "unsplash.com": 3
+        },
+        "google_fonts": [
+          "Archivo",
+          "IBM Plex Mono"
+        ],
+        "has_credits": true
+      },
+      "shots": [
+        "invoicing-unclaudey-desktop-fold.jpg",
+        "invoicing-unclaudey-desktop-full.jpg",
+        "invoicing-unclaudey-mobile-fold.jpg",
+        "invoicing-unclaudey-mobile-full.jpg"
+      ]
+    }
+  }
+}

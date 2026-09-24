@@ -131,7 +131,23 @@ Files it writes in your project's `.unclaudey/` folder:
 - **When it doesn't** (specific trades like dental clinics, mechanics and pottery wheels), the tool labels coverage *weak*: it caught 6 of 6. The skill then re-runs that slot against the full Unsplash library with `--expand unsplash`, instead of settling for a near-miss.
 - **Planted mistakes:** `lint` catches invented Unsplash IDs, the dead `source.unsplash.com` service, missing `alt`, placeholder services, layout-shift risks and missing credits.
 
-`benchmarks/run_ab.sh` runs the same briefs through headless Claude Code, once with Anthropic's `frontend-design` only and once with unclaudey, for a side-by-side comparison.
+### A/B vs Anthropic's `frontend-design`
+
+The setup: the same three briefs, each built by fresh Claude sessions with a single skill installed. Without the photo pipeline, the model used **0 photos across 3 pages**. It drew SVG or CSS instead, even for a climbing gym and a ceramics studio. With unclaudey, every page shipped 4–5 real, credited photos, and **none were broken**.
+
+![Climbing brief, first screen: frontend-design only (left) vs unclaudey (right)](benchmarks/results/climbing-first-screen.jpg)
+
+<sub>Right-hand photos by [Grant.C](https://www.flickr.com/photos/69663188@N00) on Flickr, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), found via Openverse.</sub>
+
+Honest verdict: unclaudey clearly won climbing, ceramics was a split, and invoicing was a tie. The baseline skill is already good, and both arms still converged on fonts and concepts for the same brief. Details, method and caveats are in [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md). To reproduce, run `benchmarks/run_ab.sh` (headless Claude Code).
+
+## Limitations (honest ones)
+
+- **The local library is 25k photos, mostly from 2017–2020.** It is strong on landscapes, cities, architecture, interiors, food, textures and lifestyle. It is thin on specific trades and services. The tool detects this, labels the slot's coverage *weak*, and uses live Unsplash search instead. That needs your free key, and it's where most niche briefs end up.
+- **Each `search` call takes about 6 s** to load the model, then about 0.1 s per slot. Batch all slots into one plan. (A persistent server is on the roadmap.)
+- **Openverse** (keyless) rate-limits anonymous use hard: 20 requests/min, 200/day, and sometimes bot protection. Treat it as a bonus, not the main path.
+- **Claude Code and local agents only for now.** claude.ai's web sandbox can't download the dataset or model, so the local index can't be built there.
+- **It's a design aid, not a guarantee.** Claude still makes the final call on the contact sheets. If nothing fits, the skill tells it to change the design rather than force a photo.
 
 ## Licensing and data
 

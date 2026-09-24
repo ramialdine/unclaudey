@@ -37,15 +37,20 @@ class ImgParser(HTMLParser):
 
 
 def is_image_url(u: str) -> bool:
-    host = urlsplit(u).netloc.lower()
-    return any(h in host for h in IMAGE_HOSTS) or bool(IMG_EXT.search(urlsplit(u).path))
+    parts = urlsplit(u)
+    if parts.path in ("", "/"):  # a bare origin (preconnect / dns-prefetch), not an image
+        return False
+    host = parts.netloc.lower()
+    return any(h in host for h in IMAGE_HOSTS) or bool(IMG_EXT.search(parts.path))
 
 
 def lint(files: list[Path], manifest: dict | None, network: bool, allow_draft: bool) -> tuple[list[str], list[str]]:
     errors, warns = [], []
-    allowed_photo_paths, allowed_urls = set(), set()
+    allowed_photo_paths, allowed_urls, hero_srcs = set(), set(), set()
     if manifest:
         for e in manifest.get("images", {}).values():
+            if e.get("hero"):
+                hero_srcs.add(e.get("src", ""))
             for u in [e.get("src", "")] + [s.strip().split(" ")[0] for s in (e.get("srcset") or "").split(",") if s.strip()]:
                 allowed_urls.add(u)
                 m = UNSPLASH_PHOTO.search(urlsplit(u).path)
@@ -100,8 +105,10 @@ def lint(files: list[Path], manifest: dict | None, network: bool, allow_draft: b
                 errors.append(f"{f}:{line}: <img> without alt (use alt=\"\" only for decorative images)")
             if not ({"width", "height"} <= keys) and "fill" not in keys:
                 warns.append(f"{f}:{line}: <img> without width/height causes layout shift")
-            if n == 0 and (attrs.get("loading") or "").lower() == "lazy":
-                warns.append(f"{f}:{line}: first image is lazy-loaded; the hero should load eagerly (fetchpriority=\"high\")")
+            lazy = (attrs.get("loading") or "").lower() == "lazy"
+            is_hero = attrs.get("src") in hero_srcs if hero_srcs else n == 0
+            if lazy and is_hero:
+                warns.append(f"{f}:{line}: the hero image is lazy-loaded; load it eagerly with fetchpriority=\"high\"")
     # credits
     if manifest and manifest.get("images"):
         alltext = "\n".join(texts.values())

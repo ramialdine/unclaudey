@@ -23,10 +23,10 @@ run_one() {
     cp -R "$ROOT/skills/unclaudey" "$dir/.claude/skills/"
   fi
   local brief; brief="$(jq -r --arg id "$id" '.[] | select(.id==$id) | .brief' "$ROOT/benchmarks/briefs.json")"
-  local prompt="Design and build this as a finished, production-quality single page: index.html in the current folder (inline CSS/JS; Google Fonts allowed). Use your design skill. Brief: $brief"
+  local prompt="Design and build this as a finished, production-quality single page: index.html in the current folder (inline CSS/JS; Google Fonts allowed). Use your design skill. This is a local preview: work autonomously without asking questions, and if a tool needs an API key that isn't configured, use its preview/draft mode. Brief: $brief"
   ( cd "$dir" && claude -p "$prompt" \
       --permission-mode acceptEdits \
-      --allowedTools "Read" "Write" "Edit" "Glob" "Grep" "Bash(uv run:*)" "Bash(ls:*)" "Bash(mkdir:*)" "Bash(cat:*)" \
+      --allowedTools "Skill" "Read" "Write" "Edit" "Glob" "Grep" "Bash(uv run:*)" "Bash(ls:*)" "Bash(mkdir:*)" "Bash(cat:*)" \
       --output-format json > transcript.json 2> stderr.log ) || echo "run failed: $id/$cond" >&2
   echo "done: $id/$cond"
 }

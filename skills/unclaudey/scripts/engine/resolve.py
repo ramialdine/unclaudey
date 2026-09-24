@@ -34,6 +34,7 @@ def resolve(selection: dict) -> dict:
             "slot": p["slot"], "key": c["key"], "source": c["source"], "id": c["id"],
             "alt": (p.get("alt") or "").strip(), "decorative": bool(p.get("decorative")),
             "focal": c.get("focal") or [0.5, 0.5], "sizes": p.get("sizes"), "role": p.get("role"),
+            "hero": p.get("hero"),
             "width": c.get("width"), "height": c.get("height"), "blur_hash": c.get("blur_hash"),
             "description": c.get("description"), "colors": c.get("colors") or [],
         }

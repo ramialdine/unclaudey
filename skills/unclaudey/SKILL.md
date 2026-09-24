@@ -119,6 +119,7 @@ Write `.unclaudey/selection.json`:
 - `pick` is the number on the contact sheet.
 - `alt` says what the photo shows that matters to this page. Don't write "image of". Set `"decorative": true` only for pure texture.
 - `focal` (0–1, optional) moves the crop.
+- The photo in a slot named `hero` (or `cover`, `banner`, `header`) loads eagerly with high priority, and every other photo loads lazily. If your top-of-page photo lives in a differently named slot, add `"hero": true` to its pick.
 
 Then run `$UC sheet set` and check that the chosen photos read as one photographic voice: light temperature, contrast, grade and distance. Swap the outlier.
 
@@ -134,6 +135,14 @@ Then run `$UC sheet set` and check that the chosen photos read as one photograph
 
 Rules that always apply:
 - **Never type an image URL yourself.** Use only URLs from the manifest. Invented Unsplash IDs 404, and the old `source.unsplash.com` service is shut down.
+- **Only use photos that came through this pipeline** (the local library, `--expand unsplash`, `--expand openverse`). Don't pull images from other stock sites, search engines or social media. Their licenses and URLs aren't verified, and hotlinking them often breaks. If the pipeline can't cover a slot, change that section's design.
+- **Keep the run lean.** A typical page needs:
+  - one plan with 3–6 slots and one search
+  - one look at each sheet
+  - finalists only for the hero and any photo that carries text
+  - at most one rewrite or expand round per weak slot
+
+  More searching rarely beats a clear brief, and every sheet you view costs the user tokens.
 - **Credit photographers** with the manifest's `credits_html` (a footer line is fine). Unsplash's API guidelines and CC licenses require it.
 - The hero loads eagerly with `fetchpriority="high"` and the rest load lazily. Every image gets `width`/`height` or an `aspect-ratio`.
 - Put text over a photo only in its copy space. Add a scrim gradient only where the measured contrast needs it.

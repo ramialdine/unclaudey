@@ -23,9 +23,13 @@ WIDTHS = [480, 768, 1080, 1440, 1920, 2560]
 HERO_WORDS = ("hero", "cover", "banner", "header", "background", "bg", "masthead", "splash")
 
 
-def is_hero(slot: str, i: int) -> bool:
-    s = slot.lower()
-    return i == 0 or any(w in s for w in HERO_WORDS)
+def is_hero(rec: dict) -> bool:
+    """Eager-load only the real hero: an explicit "hero": true on the pick, or a hero-like slot id.
+    (On many pages, e.g. an API homepage, the first photo sits mid-page and should stay lazy.)"""
+    if rec.get("hero") is not None:
+        return bool(rec["hero"])
+    s = rec["slot"].lower()
+    return any(w in s for w in HERO_WORDS)
 
 
 def lqip(blur_hash: str | None, aspect: float) -> str | None:
@@ -134,10 +138,10 @@ def export(resolved: dict, mode: str, out_dir: str | None, budget_kb: int, allow
     client = http_client()
     entries = []
     total = 0
-    for i, r in enumerate(imgs):
+    for r in imgs:
         w, h = int(r.get("width") or 1600), int(r.get("height") or 1067)
         aspect = w / h if h else 1.5
-        hero = is_hero(r["slot"], i)
+        hero = is_hero(r)
         fx, fy = (r.get("focal") or [0.5, 0.5])
         e = {
             "slot": r["slot"], "key": r["key"], "status": r["status"], "hero": hero,

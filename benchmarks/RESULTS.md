@@ -72,6 +72,39 @@ Nothing in this file compares the Unsplash Dataset with other datasets. The data
 | `lint --network` on the exported page | exit 0, all images load |
 | Plugin install in an isolated `CLAUDE_CONFIG_DIR` | installs; ~140 tokens always-on, ~4.8k tokens when the skill runs |
 
-## 3. A/B: Anthropic `frontend-design` vs unclaudey
+## 3. A/B: Anthropic `frontend-design` vs unclaudey (2026-09-23)
 
-Pending. `run_ab.sh` runs the same three briefs (`briefs.json`) through headless Claude Code: once with only `frontend-design` installed and once with only `unclaudey`. Screenshots will be added here after the runs. They use API-resolved photos, so nothing from the dataset itself is published.
+**Method:**
+- Three briefs from `briefs.json`, each built twice.
+- Every page was built by a fresh, independent Claude session (same model, same prompt). Each session had exactly one design skill installed: Anthropic's `frontend-design`, or `unclaudey`. These were Claude Code subagents; `run_ab.sh` does the same thing with headless `claude -p`.
+- Four of the six sessions hit account usage limits during their final screenshot checks, after they had already written their pages. The pages are evaluated as written.
+- Screenshots: Chrome with reduced motion, 1440×900 and 390×844 (`screenshot.py`, `collect.py`).
+
+![Climbing brief, first screen: frontend-design only (left) vs unclaudey (right)](results/climbing-first-screen.jpg)
+
+*Photos in the unclaudey build (right): "IMG_6793", "IMG_6799", "IMG_7018", "IMG_6787" and "IMG_6804" by [Grant.C](https://www.flickr.com/photos/69663188@N00) on Flickr, licensed under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). They were found and credited through Openverse by `search --expand openverse`. The left page contains only the model's own SVG drawings.*
+
+<details><summary>Full pages, same brief (left: frontend-design only, right: unclaudey)</summary>
+
+![Climbing brief, full pages](results/climbing-full-page.jpg)
+
+</details>
+
+| | frontend-design only | unclaudey |
+|---|---|---|
+| Real photographs used | **0 / 0 / 0** | **5 / 5 / 4** (ceramics / climbing / invoicing) |
+| Broken or invented image URLs | none (no images) | **none**: `lint --network` found 0 errors on all 3 |
+| Photo credits on the page | n/a | yes, on all 3 |
+| Imagery instead | canvas animation and SVG pots; SVG holds and a mill drawing; CSS form mockups | a black-and-white documentary set; arched "mill window" photo frames; one row of four freelancer-city photos |
+
+**Verdicts (by eye, honest):**
+- **Climbing: unclaudey.** Real indoor-bouldering photos make it look and feel like an actual gym. Both builds chose the *same* fonts (Besley with Libre Franklin), so the photography is what separated them.
+- **Ceramics: split.** The baseline's interactive canvas pot is the more striking first screen. unclaudey's page reads as a real studio. There the library had coverage *fair* or *weak*, so the build expanded to Openverse and unified the mixed sources in black and white.
+- **Invoicing: tie.** Both converged on the same "three ledger lines" hero concept. unclaudey used photos only where they earn a place (one row of freelancer cities), which is the restraint the skill asks for on an API page.
+
+**What this says:**
+1. **Your hypothesis holds.** Without a way to get real, verified photos, the model avoids photography entirely: 0 photos across 3 pages, even for a ceramics studio and a climbing gym. With the pipeline, every page carried real, credited photos, and none were broken.
+2. **Photos aren't the whole story.** Anthropic's current `frontend-design` already avoids most of the "Claude look". For the same brief, both arms still converged on fonts and hero concepts. Future work: diversification for type and concept, not just imagery.
+3. **Cost.** The skill's review loop is thorough, and early runs over-explored (19 slots on one page, plus trying an off-pipeline stock site). SKILL.md now has two rules: *use only photos from this pipeline*, and *keep the run lean*.
+
+The ceramics and invoicing unclaudey screenshots aren't published here. Those builds include unresolved (draft) Unsplash photos, and the dataset terms don't allow publishing them. They'll be added after the photos are resolved through the Unsplash API.
