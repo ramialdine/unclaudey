@@ -168,25 +168,32 @@ def run(target: str, out_dir: Path, video: bool = False) -> dict:
         pg.add_init_script(INIT)
         t0 = time.time()
         pg.goto(url, wait_until="commit", timeout=90_000)
-        frames, settled = [], []
+        frames, settled, running = [], [], []
         for t in LOAD_TIMES:
             wait = t / 1000 - (time.time() - t0)
             if wait > 0:
                 pg.wait_for_timeout(wait * 1000)
             png = pg.screenshot(type="png")
             try:
-                fonts_done = pg.evaluate("() => document.readyState !== 'loading' && document.fonts.status === 'loaded'")
+                st = pg.evaluate("""() => {
+                  const inView = Array.from(document.images).filter(i => { const r = i.getBoundingClientRect();
+                    return r.bottom > 0 && r.top < innerHeight && r.width > 0; });
+                  return {ready: document.readyState !== 'loading' && document.fonts.status === 'loaded'
+                                 && inView.every(i => i.complete && i.naturalWidth > 0),
+                          running: document.getAnimations ? document.getAnimations().filter(a => a.playState === 'running').length : 0};
+                }""")
             except Exception:
-                fonts_done = False
+                st = {"ready": False, "running": 0}
             frames.append((f"{int((time.time() - t0) * 1000)} ms", png))
-            settled.append(bool(fonts_done) and float(_gray(png).std()) > 3.0)
+            settled.append(bool(st["ready"]) and float(_gray(png).std()) > 3.0)
+            running.append(int(st["running"]))
         pg.wait_for_load_state("networkidle", timeout=60_000)
         pg.wait_for_timeout(600)
         diffs = [_diff_local(frames[i][1], frames[i + 1][1]) for i in range(len(frames) - 1)]
-        # ignore first paint and font swaps: only count intervals whose start frame had settled
+        # ignore first paint, font swaps and photos arriving: only count intervals whose start frame had settled
         moving = [f"{frames[i][0]}→{frames[i + 1][0]}" for i, dv in enumerate(diffs) if dv > 3.0 and settled[i]]
         report["load_motion"] = {"frame_diffs": [round(x, 2) for x in diffs], "moving_intervals": moving,
-                                 "still_moving_at_2s": diffs[-1] > 3.0}
+                                 "still_moving_at_2s": diffs[-1] > 3.0, "css_js_animations_running": running}
         _strip(frames, "load filmstrip · first screen over time", out_dir / "load.jpg")
 
         # 2. reveal census + scroll filmstrip + frame pacing
